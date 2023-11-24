@@ -59,6 +59,12 @@ def main():
         else:
             bot = RandomBot(player_symbol)
             move = bot.get_move(board)
+            
+            # 修改部分，确保 move 不为 None
+            while move is None:
+                print("RandomBot made an invalid move. Trying again.")
+                move = bot.get_move(board)
+
             row, col = move
 
         if 0 <= row < 3 and 0 <= col < 3:
