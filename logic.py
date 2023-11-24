@@ -70,12 +70,21 @@ class Board:
     
         return None
 
+    # 修改方法名为 get_available_squares
+    def get_available_squares(self):
+        available_squares = []
+        for row in range(3):
+            for col in range(3):
+                if self.grid[row][col] is None:
+                    available_squares.append((row, col))
+        return available_squares
+
 
 class RandomBot:
     def __init__(self, symbol):
         self.symbol = symbol
 
     def get_move(self, board):
-        available_squares = board.get_empty_squares()
-        print(f"Available Squares: {available_squares}")  # 添加调试输出
+        available_squares = board.get_available_squares()  # 修改为正确的方法名
+        print(f"Available Squares: {available_squares}")
         return random.choice(available_squares) if available_squares else None
