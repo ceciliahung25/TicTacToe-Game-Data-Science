@@ -1,3 +1,7 @@
+# cli.py
+
+import csv
+import os
 from logic import Board, RandomBot
 
 def print_board(board):
@@ -41,6 +45,9 @@ def main():
             if winner:
                 print_board(board)
                 print(f"Player {winner} wins!")
+
+                # Record winner in log file
+                record_winner(winner)
                 break
             elif all(cell is not None for row in board.grid for cell in row):
                 print_board(board)
@@ -50,6 +57,21 @@ def main():
                 player = board.other_player(player)
         else:
             print("Invalid input! Row and column must be 0, 1, or 2.")
+
+def record_winner(player):
+    log_file_path = 'logs/game_log.csv'
+    log_exists = os.path.exists(log_file_path)
+
+    with open(log_file_path, 'a', newline='') as csvfile:
+        fieldnames = ['Player', 'Result']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+        # If the log file doesn't exist, write the header
+        if not log_exists:
+            writer.writeheader()
+
+        # Write winner data to the log file
+        writer.writerow({'Player': player, 'Result': 'Win'})
 
 if __name__ == '__main__':
     main()
