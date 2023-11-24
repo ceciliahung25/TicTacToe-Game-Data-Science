@@ -1,3 +1,5 @@
+# logic.py
+
 import random
 
 class Board:
@@ -27,46 +29,41 @@ class Board:
         # Check rows
         for row in self.grid:
             if row.count('X') == 3:
-                print("Row Winner: X")
                 return 'X'
             elif row.count('O') == 3:
-                print("Row Winner: O")
                 return 'O'
-    
+
         # Check columns
         for col in range(3):
             column = [self.grid[row][col] for row in range(3)]
             if column.count('X') == 3:
-                print("Column Winner: X")
                 return 'X'
             elif column.count('O') == 3:
-                print("Column Winner: O")
                 return 'O'
-    
+
         # Check diagonals
         diagonal1 = [self.grid[i][i] for i in range(3)]
         diagonal2 = [self.grid[i][2 - i] for i in range(3)]
-    
+
         if diagonal1.count('X') == 3:
-            print("Diagonal Winner: X")
             return 'X'
         elif diagonal1.count('O') == 3:
-            print("Diagonal Winner: O")
             return 'O'
-        
+
         if diagonal2.count('X') == 3:
-            print("Diagonal Winner: X")
             return 'X'
         elif diagonal2.count('O') == 3:
-            print("Diagonal Winner: O")
             return 'O'
-    
-        # Print the board state before returning None
-        print("No winner yet. Current board state:")
-        for row in self.grid:
-            print(row)
-    
+
         return None
+
+    def get_empty_squares(self):
+        empty_squares = []
+        for i in range(3):
+            for j in range(3):
+                if self.grid[i][j] is None:
+                    empty_squares.append((i, j))
+        return empty_squares
 
 
 class RandomBot:
@@ -76,14 +73,3 @@ class RandomBot:
     def get_move(self, board):
         available_squares = board.get_empty_squares()
         return random.choice(available_squares) if available_squares else None
-
-
-def choose_player_type():
-    while True:
-        choice = input("Choose player type (1 for Human, 2 for RandomBot): ")
-        if choice == '1':
-            return 'X'
-        elif choice == '2':
-            return 'O'
-        else:
-            print("Invalid choice. Please enter 1 or 2.")
