@@ -19,6 +19,23 @@ def choose_player_type():
         else:
             print("Invalid choice. Please enter 1 or 2.")
 
+# 新增的函数，用于写入游戏数据到 CSV 文件
+def write_game_log(player, winner):
+    log_file_path = 'logs/game_log.csv'
+
+    # 如果文件不存在，创建文件并写入标题
+    if not os.path.exists(log_file_path):
+        with open(log_file_path, 'w', newline='') as csvfile:
+            fieldnames = ['Player', 'Winner']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+
+    # 将当前游戏数据写入文件
+    with open(log_file_path, 'a', newline='') as csvfile:
+        fieldnames = ['Player', 'Winner']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writerow({'Player': player, 'Winner': winner})
+
 def main():
     board = Board()
     player = choose_player_type()
@@ -45,33 +62,18 @@ def main():
             if winner:
                 print_board(board)
                 print(f"Player {winner} wins!")
-
-                # Record winner in log file
-                record_winner(winner)
+                write_game_log(player, winner)  # 将游戏数据写入 CSV 文件
                 break
             elif all(cell is not None for row in board.grid for cell in row):
                 print_board(board)
                 print("It's a draw!")
+                write_game_log(player, "Draw")  # 将游戏数据写入 CSV 文件
                 break
             else:
                 player = board.other_player(player)
         else:
             print("Invalid input! Row and column must be 0, 1, or 2.")
 
-def record_winner(player):
-    log_file_path = 'logs/game_log.csv'
-    log_exists = os.path.exists(log_file_path)
-
-    with open(log_file_path, 'a', newline='') as csvfile:
-        fieldnames = ['Player', 'Result']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
-        # If the log file doesn't exist, write the header
-        if not log_exists:
-            writer.writeheader()
-
-        # Write winner data to the log file
-        writer.writerow({'Player': player, 'Result': 'Win'})
-
 if __name__ == '__main__':
     main()
+
