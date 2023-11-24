@@ -50,11 +50,9 @@ def write_game_log(player_type, player_symbol, move_count, winner):
 def main():
     board = Board()
     player_symbol, player_type = choose_player_type()
-    move_count = 0
 
-    # 在循环之前创建 RandomBot 对象
-    if player_type == 'RandomBot':
-        bot = RandomBot(player_symbol)
+    # 重置 move_count
+    move_count = 0
 
     while True:
         print_board(board)
@@ -64,7 +62,7 @@ def main():
             row = int(input("Enter the row (0, 1, or 2): "))
             col = int(input("Enter the column (0, 1, or 2): "))
         else:
-            # 在循环中使用相同的 RandomBot 对象
+            bot = RandomBot(player_symbol)
             move = bot.get_move(board)
             row, col = move
 
@@ -79,15 +77,24 @@ def main():
             if winner:
                 print_board(board)
                 print(f"{player_type} Player {player_symbol} wins!")
-                write_game_log(player_type, player_symbol, move_count, player_symbol)  # 将游戏数据写入 CSV 文件
+
+                # 仅在游戏开始时写入一次
+                if move_count == 1:
+                    write_game_log(player_type, player_symbol, move_count, player_symbol)
                 break
+
             elif all(cell is not None for row in board.grid for cell in row):
                 print_board(board)
                 print("It's a draw!")
-                write_game_log(player_type, player_symbol, move_count, "Draw")  # 将游戏数据写入 CSV 文件
+
+                # 仅在游戏开始时写入一次
+                if move_count == 1:
+                    write_game_log(player_type, player_symbol, move_count, "Draw")
                 break
+
             else:
                 player_symbol = board.other_player(player_symbol)
+
         else:
             print("Invalid input! Row and column must be 0, 1, or 2.")
 
