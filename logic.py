@@ -10,13 +10,6 @@ class Board:
             [None, None, None],
         ]
 
-    def make_empty_board(self):
-        self.grid = [
-            [None, None, None],
-            [None, None, None],
-            [None, None, None],
-        ]
-
     def other_player(self, player):
         return 'O' if player == 'X' else 'X'
 
@@ -57,19 +50,10 @@ class Board:
 
         return None
 
-    def get_empty_squares(self):
-        empty_squares = []
-        for i in range(3):
-            for j in range(3):
-                if self.grid[i][j] is None:
-                    empty_squares.append((i, j))
-        return empty_squares
-
-
 class RandomBot:
     def __init__(self, symbol):
         self.symbol = symbol
 
     def get_move(self, board):
-        available_squares = board.get_empty_squares()
+        available_squares = [(i, j) for i in range(3) for j in range(3) if board.grid[i][j] is None]
         return random.choice(available_squares) if available_squares else None
