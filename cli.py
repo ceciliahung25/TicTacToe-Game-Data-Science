@@ -20,21 +20,21 @@ def choose_player_type():
         else:
             print("Invalid choice. Please enter 1 or 2.")
 
-# 新增的函数，用于写入游戏数据到 CSV 文件
+# Updated write_game_log function for better debugging
 def write_game_log(player_type, player_symbol, move_count, winner):
     log_file_path = 'logs/game_log.csv'
 
-    # 如果文件不存在，创建文件并写入标题
+    # If the file does not exist, create the file and write the header
     if not os.path.exists(log_file_path):
         with open(log_file_path, 'w', newline='') as csvfile:
             fieldnames = ['Timestamp', 'Player Type', 'Player Symbol', 'Move Count', 'Winner']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
 
-    # 将当前游戏数据写入文件
+    # Write the current game data to the file
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    # 添加检查是否已经有了获胜者，避免重复写入
+    # Check if there is already a winner to avoid duplicate entries
     if winner and winner != "Draw":
         with open(log_file_path, 'a', newline='') as csvfile:
             fieldnames = ['Timestamp', 'Player Type', 'Player Symbol', 'Move Count', 'Winner']
@@ -50,8 +50,6 @@ def write_game_log(player_type, player_symbol, move_count, winner):
 def main():
     board = Board()
     player_symbol, player_type = choose_player_type()
-
-    # 重置 move_count
     move_count = 0
 
     while True:
@@ -77,24 +75,15 @@ def main():
             if winner:
                 print_board(board)
                 print(f"{player_type} Player {player_symbol} wins!")
-
-                # 仅在游戏开始时写入一次
-                if move_count == 1:
-                    write_game_log(player_type, player_symbol, move_count, player_symbol)
+                write_game_log(player_type, player_symbol, move_count, player_symbol)
                 break
-
             elif all(cell is not None for row in board.grid for cell in row):
                 print_board(board)
                 print("It's a draw!")
-
-                # 仅在游戏开始时写入一次
-                if move_count == 1:
-                    write_game_log(player_type, player_symbol, move_count, "Draw")
+                write_game_log(player_type, player_symbol, move_count, "Draw")
                 break
-
             else:
                 player_symbol = board.other_player(player_symbol)
-
         else:
             print("Invalid input! Row and column must be 0, 1, or 2.")
 
