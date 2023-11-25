@@ -1,5 +1,3 @@
-# logic.py
-
 import random
 from datetime import datetime
 
@@ -10,7 +8,7 @@ class Board:
             [None, None, None],
             [None, None, None],
         ]
-        self.game_log = []  # 新增的属性，用于记录游戏数据
+        self.game_log = []  
 
     def reset_board(self):
         self.grid = [
@@ -48,31 +46,31 @@ class Board:
         return [(i, j) for i in range(3) for j in range(3) if self.grid[i][j] is None]
 
     def record_move(self, player, row, col, start_time):
-        # 在每一步完成后记录游戏数据
+        
         end_time = datetime.now()
-        elapsed_time = (end_time - start_time).total_seconds()  # 游戏用时（秒）
+        elapsed_time = (end_time - start_time).total_seconds()  
         self.game_log.append({
             'player': player,
             'row': row,
             'col': col,
-            'board': [row[:] for row in self.grid],  # 创建一个副本以防止引用问题
+            'board': [row[:] for row in self.grid],  
             'result': self.get_winner(),
             'elapsed_time': elapsed_time,
-            'step': len(self.game_log),  # 步数即已记录的数据数量
+            'step': len(self.game_log),  
         })
 
     def record_draw(self, start_time):
-        # 在平局时记录游戏数据
+        
         end_time = datetime.now()
-        elapsed_time = (end_time - start_time).total_seconds()  # 游戏用时（秒）
+        elapsed_time = (end_time - start_time).total_seconds()  
         self.game_log.append({
-            'player': None,  # 在平局时，没有获胜者
+            'player': None,  
             'row': None,
             'col': None,
-            'board': [row[:] for row in self.grid],  # 创建一个副本以防止引用问题
-            'result': None,  # 平局
+            'board': [row[:] for row in self.grid],  
+            'result': None,  
             'elapsed_time': elapsed_time,
-            'step': len(self.game_log),  # 步数即已记录的数据数量
+            'step': len(self.game_log),  
         })
 
 class RandomBot:
