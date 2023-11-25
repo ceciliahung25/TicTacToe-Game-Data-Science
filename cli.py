@@ -1,5 +1,3 @@
-# cli.py
-
 from logic import Board, RandomBot
 import csv
 import os
@@ -22,7 +20,7 @@ def choose_player_type():
 
 def play_game(board):
     player = choose_player_type()
-    start_time = datetime.now()  # 记录游戏开始时间
+    start_time = datetime.now()  
 
     while True:
         print_board(board)
@@ -42,7 +40,7 @@ def play_game(board):
                 continue
 
             board.grid[row][col] = player
-            board.record_move(player, row, col, start_time)  # 记录游戏数据
+            board.record_move(player, row, col, start_time)  
             winner = board.get_winner()
             if winner:
                 print_board(board)
@@ -52,7 +50,7 @@ def play_game(board):
                 print_board(board)
                 print("It's a draw!")
 
-                # 手动记录平局情况
+                
                 board.record_draw(start_time)
 
                 break
@@ -61,20 +59,20 @@ def play_game(board):
         else:
             print("Invalid input! Row and column must be 0, 1, or 2.")
 
-    # 游戏结束后写入CSV文件
+    
     write_csv(board)
 
 def write_csv(board):
     file_path = os.path.join('logs', 'game_log.csv')
     fieldnames = ['player', 'row', 'col', 'board', 'result', 'elapsed_time', 'step']
 
-    # 检查文件是否存在，如果不存在则写入表头
+    
     if not os.path.exists(file_path):
         with open(file_path, mode='w', newline='') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
             writer.writeheader()
 
-    # 写入所有游戏日志数据
+    
     with open(file_path, mode='a', newline='') as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writerows(board.game_log)
