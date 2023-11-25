@@ -63,9 +63,9 @@ def main():
             row = int(input("Enter the row (0, 1, or 2): "))
             col = int(input("Enter the column (0, 1, or 2): "))
         else:
-            # Use the same RandomBot instance for each iteration
-            move = bot.get_move(board) if player_type == 'RandomBot' else None
-            row, col = move
+            move = bot.get_move(board)
+            if player_type == 'RandomBot':
+                row, col = move
 
         if 0 <= row < 3 and 0 <= col < 3:
             if board.grid[row][col] is not None:
