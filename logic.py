@@ -61,6 +61,20 @@ class Board:
             'step': len(self.game_log),  # 步数即已记录的数据数量
         })
 
+    def record_draw(self, start_time):
+        # 在平局时记录游戏数据
+        end_time = datetime.now()
+        elapsed_time = (end_time - start_time).total_seconds()  # 游戏用时（秒）
+        self.game_log.append({
+            'player': None,  # 在平局时，没有获胜者
+            'row': None,
+            'col': None,
+            'board': [row[:] for row in self.grid],  # 创建一个副本以防止引用问题
+            'result': None,  # 平局
+            'elapsed_time': elapsed_time,
+            'step': len(self.game_log),  # 步数即已记录的数据数量
+        })
+
 class RandomBot:
     def __init__(self, symbol):
         self.symbol = symbol
