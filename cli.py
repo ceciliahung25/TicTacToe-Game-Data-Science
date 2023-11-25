@@ -1,8 +1,3 @@
-# cli.py
-
-import csv
-import os
-from datetime import datetime
 from logic import Board, RandomBot
 
 def print_board(board):
@@ -14,29 +9,47 @@ def choose_player_type():
     while True:
         choice = input("Choose player type (1 for Human, 2 for RandomBot): ")
         if choice == '1':
-            return 'X', 'Human'
+            return 'X'
         elif choice == '2':
-            return 'O', 'RandomBot'
+            return 'O'
         else:
             print("Invalid choice. Please enter 1 or 2.")
 
-# Updated write_game_log function for better debugging
-def write_game_log(player_type, player_symbol, move_count, winner):
-    log_file_path = 'logs/game_log.csv'
+def main():
+    board = Board()
+    player = choose_player_type()
 
-    # If the file does not exist, create the file and write the header
-    if not os.path.exists(log_file_path):
-        with open(log_file_path, 'w', newline='') as csvfile:
-            fieldnames = ['Timestamp', 'Player Type', 'Player Symbol', 'Move Count', 'Winner']
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
+    while True:
+        print_board(board)
+        print(f"Player {player}'s turn.")
 
-    # Write the current game data to the file
-    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        if player == 'X':
+            row = int(input("Enter the row (0, 1, or 2): "))
+            col = int(input("Enter the column (0, 1, or 2): "))
+        else:
+            bot = RandomBot(player)
+            move = bot.get_move(board)
+            row, col = move
 
-    # Check if there is already a winner to avoid duplicate entries
-    if winner and winner != "Draw":
-        with open(log_file_path, 'a', newline='') as csvfile:
-            fieldnames = ['Timestamp', 'Player Type', 'Player Symbol', 'Move Count', 'Winner']
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer
+        if 0 <= row < 3 and 0 <= col < 3:
+            if board.grid[row][col] is not None:
+                print("That cell is already occupied! Try again.")
+                continue
+
+            board.grid[row][col] = player
+            winner = board.get_winner()
+            if winner:
+                print_board(board)
+                print(f"Player {winner} wins!")
+                break
+            elif all(cell is not None for row in board.grid for cell in row):
+                print_board(board)
+                print("It's a draw!")
+                break
+            else:
+                player = board.other_player(player)
+        else:
+            print("Invalid input! Row and column must be 0, 1, or 2.")
+
+if __name__ == '__main__':
+    main()
