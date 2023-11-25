@@ -9,9 +9,9 @@ class Board:
             [None, None, None],
             [None, None, None],
         ]
-        self.game_log = []  # 新增的属性，用于记录游戏数据
+        self.game_log = []
 
-    def reset_board(self):
+    def make_empty_board(self):
         self.grid = [
             [None, None, None],
             [None, None, None],
@@ -46,7 +46,7 @@ class Board:
     def get_empty_squares(self):
         return [(i, j) for i in range(3) for j in range(3) if self.grid[i][j] is None]
 
-    def record_move(self, player, row, col):
+    def record_move(self, player, row, col, step):
         # 在每一步完成后记录游戏数据
         self.game_log.append({
             'player': player,
@@ -54,6 +54,7 @@ class Board:
             'col': col,
             'board': [row[:] for row in self.grid],  # 创建一个副本以防止引用问题
             'result': self.get_winner(),
+            'step': step,  # 新增步数信息
         })
 
 class RandomBot:
