@@ -1,4 +1,7 @@
-import random
+# logic.py
+
+import csv
+import os
 
 class Board:
     def __init__(self):
@@ -7,46 +10,37 @@ class Board:
             [None, None, None],
             [None, None, None],
         ]
+        self.game_log = []
 
-    def make_empty_board(self):
+    def reset_board(self):
         self.grid = [
             [None, None, None],
             [None, None, None],
             [None, None, None],
         ]
 
-    def other_player(self, player):
-        if player == 'X':
-            return 'O'
-        else:
-            return 'X'
+    def record_move(self, player, row, col, result=None):
+        move_info = {
+            'player': player,
+            'row': row,
+            'col': col,
+            'board': [row[:] for row in self.grid],
+            'result': result
+        }
+        self.game_log.append(move_info)
+        return move_info
 
-    def get_winner(self):
-        # Check rows
-        for row in self.grid:
-            if row[0] == row[1] == row[2] and row[0] is not None:
-                return row[0]
+    def write_csv(self):
+        file_path = os.path.join('logs', 'game_log.csv')
+        fieldnames = ['player', 'row', 'col', 'board', 'result']
 
-        # Check columns
-        for col in range(3):
-            if self.grid[0][col] == self.grid[1][col] == self.grid[2][col] and self.grid[0][col] is not None:
-                return self.grid[0][col]
+        # 检查文件是否存在，如果不存在则写入表头
+        if not os.path.exists(file_path):
+            with open(file_path, mode='w', newline='') as csv_file:
+                writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+                writer.writeheader()
 
-        # Check diagonals
-        if self.grid[0][0] == self.grid[1][1] == self.grid[2][2] and self.grid[0][0] is not None:
-            return self.grid[0][0]
-        if self.grid[0][2] == self.grid[1][1] == self.grid[2][0] and self.grid[0][2] is not None:
-            return self.grid[0][2]
-
-        return None
-
-    def get_empty_squares(self):
-        return [(i, j) for i in range(3) for j in range(3) if self.grid[i][j] is None]
-
-class RandomBot:
-    def __init__(self, symbol):
-        self.symbol = symbol
-
-    def get_move(self, board):
-        available_squares = board.get_empty_squares()
-        return random.choice(available_squares) if available_squares else None
+        # 写入所有游戏日志数据
+        with open(file_path, mode='a', newline='') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+            writer.writerows(self.game_log)
