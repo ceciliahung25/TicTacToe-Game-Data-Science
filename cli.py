@@ -1,87 +1,75 @@
-# cli.py
+# logic.py
 
-from logic import Board, RandomBot
-import csv
-import os
+import random
 from datetime import datetime
 
-def print_board(board):
-    for i, row in enumerate(board.grid):
-        print(f"{i} | {' | '.join(cell if cell is not None else ' ' for cell in row)} |")
-    print("   0   1   2")
+class Board:
+    def __init__(self):
+        self.grid = [
+            [None, None, None],
+            [None, None, None],
+            [None, None, None],
+        ]
+        self.game_log = []  # 新增的属性，用于记录游戏数据
 
-def choose_player_type():
-    while True:
-        choice = input("Choose player type (1 for Human, 2 for RandomBot): ")
-        if choice == '1':
-            return 'X'
-        elif choice == '2':
+    def reset_board(self):
+        self.grid = [
+            [None, None, None],
+            [None, None, None],
+            [None, None, None],
+        ]
+
+    def other_player(self, player):
+        if player == 'X':
             return 'O'
         else:
-            print("Invalid choice. Please enter 1 or 2.")
+            return 'X'
 
-def play_game(board):
-    player = choose_player_type()
-    start_time = datetime.now()  # 记录游戏开始时间
+    def get_winner(self):
+        # Check rows
+        for row in self.grid:
+            if row[0] == row[1] == row[2] and row[0] is not None:
+                return row[0]
 
-    while True:
-        print_board(board)
-        print(f"Player {player}'s turn.")
+        # Check columns
+        for col in range(3):
+            if self.grid[0][col] == self.grid[1][col] == self.grid[2][col] and self.grid[0][col] is not None:
+                return self.grid[0][col]
 
-        if player == 'X':
-            row = int(input("Enter the row (0, 1, or 2): "))
-            col = int(input("Enter the column (0, 1, or 2): "))
-        else:
-            bot = RandomBot(player)
-            move = bot.get_move(board)
-            row, col = move
+        # Check diagonals
+        if self.grid[0][0] == self.grid[1][1] == self.grid[2][2] and self.grid[0][0] is not None:
+            return self.grid[0][0]
+        if self.grid[0][2] == self.grid[1][1] == self.grid[2][0] and self.grid[0][2] is not None:
+            return self.grid[0][2]
 
-        if 0 <= row < 3 and 0 <= col < 3:
-            if board.grid[row][col] is not None:
-                print("That cell is already occupied! Try again.")
-                continue
+        return None
 
-            board.grid[row][col] = player
-            board.record_move(player, row, col, start_time)  # 记录游戏数据
-            winner = board.get_winner()
-            if winner:
-                print_board(board)
-                print(f"Player {winner} wins!")
-                break
-            elif all(cell is not None for row in board.grid for cell in row):
-                print_board(board)
-                print("It's a draw!")
-                break
-            else:
-                player = board.other_player(player)
-        else:
-            print("Invalid input! Row and column must be 0, 1, or 2.")
+    def get_empty_squares(self):
+        return [(i, j) for i in range(3) for j in range(3) if self.grid[i][j] is None]
 
-    # 游戏结束后写入CSV文件
-    write_csv(board)
+    def record_move(self, player, row, col, start_time):
+        # 在每一步完成后记录游戏数据
+        end_time = datetime.now()
+        elapsed_time = (end_time - start_time).total_seconds()  # 游戏用时（秒）
 
-def write_csv(board):
-    file_path = os.path.join('logs', 'game_log.csv')
-    fieldnames = ['player', 'row', 'col', 'board', 'result', 'elapsed_time', 'step']
+        # 获取游戏结果
+        winner = self.get_winner()
+        result = winner if winner is not None else 'Draw'  # 如果有赢家，使用赢家；否则，使用 'Draw'
 
-    # 检查文件是否存在，如果不存在则写入表头
-    if not os.path.exists(file_path):
-        with open(file_path, mode='w', newline='') as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-            writer.writeheader()
+        self.game_log.append({
+            'player': player,
+            'row': row,
+            'col': col,
+            'board': [row[:] for row in self.grid],  # 创建一个副本以防止引用问题
+            'result': result,
+            'elapsed_time': elapsed_time,
+            'step': len(self.game_log),  # 步数即已记录的数据数量
+        })
 
-    # 写入所有游戏日志数据
-    with open(file_path, mode='a', newline='') as csv_file:
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-        writer.writerows(board.game_log)
+class RandomBot:
+    def __init__(self, symbol):
+        self.symbol = symbol
 
-def main():
-    while True:
-        board = Board()
-        play_game(board)
-        restart = input("Do you want to play again? (yes/no): ")
-        if restart.lower() != 'yes':
-            break
-
-if __name__ == '__main__':
-    main()
+    def get_move(self, board):
+        available_squares = board.get_empty_squares()
+        return random.choice(available_squares) if available_squares else None
