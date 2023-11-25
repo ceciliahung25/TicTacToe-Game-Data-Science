@@ -53,6 +53,8 @@ def play_game():
         else:
             print("Invalid input! Row and column must be 0, 1, or 2.")
 
+        # 游戏结束后重置游戏板
+
     # 游戏结束后重置游戏板和写入CSV文件
     board.reset_board()
     board.write_csv()
