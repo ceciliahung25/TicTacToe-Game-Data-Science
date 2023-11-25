@@ -64,7 +64,7 @@ def main():
             col = int(input("Enter the column (0, 1, or 2): "))
         else:
             # Use the same RandomBot instance for each iteration
-            move = bot.get_move(board)
+            move = bot.get_move(board, player_type == 'Human')
             row, col = move
 
         if 0 <= row < 3 and 0 <= col < 3:
