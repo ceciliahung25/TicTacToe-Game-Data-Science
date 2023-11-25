@@ -50,6 +50,8 @@ class Board:
 
         return None
 
+import random
+
 class RandomBot:
     def __init__(self, symbol):
         self.symbol = symbol
@@ -57,6 +59,5 @@ class RandomBot:
     def get_move(self, board):
         available_squares = [(i, j) for i in range(3) for j in range(3) if board.grid[i][j] is None]
 
-        # 返回第一个可用的位置，如果没有可用的位置，则返回默认值(0, 0)
-        return available_squares[0] if available_squares else (0, 0)
-
+        # 随机选择一个可用位置
+        return random.choice(available_squares) if available_squares else (0, 0)
