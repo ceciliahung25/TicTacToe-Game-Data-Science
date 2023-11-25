@@ -52,6 +52,9 @@ def main():
     player_symbol, player_type = choose_player_type()
     move_count = 0
 
+    # Create RandomBot instance outside the loop
+    bot = RandomBot(player_symbol)
+
     while True:
         print_board(board)
         print(f"{player_type} Player {player_symbol}'s turn.")
@@ -60,7 +63,7 @@ def main():
             row = int(input("Enter the row (0, 1, or 2): "))
             col = int(input("Enter the column (0, 1, or 2): "))
         else:
-            bot = RandomBot(player_symbol)
+            # Use the same RandomBot instance for each iteration
             move = bot.get_move(board)
             row, col = move
 
