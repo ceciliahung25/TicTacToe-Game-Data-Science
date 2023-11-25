@@ -1,6 +1,7 @@
 # logic.py
 
 import random
+from datetime import datetime
 
 class Board:
     def __init__(self):
@@ -9,9 +10,9 @@ class Board:
             [None, None, None],
             [None, None, None],
         ]
-        self.game_log = []
+        self.game_log = []  # 新增的属性，用于记录游戏数据
 
-    def make_empty_board(self):
+    def reset_board(self):
         self.grid = [
             [None, None, None],
             [None, None, None],
@@ -46,15 +47,18 @@ class Board:
     def get_empty_squares(self):
         return [(i, j) for i in range(3) for j in range(3) if self.grid[i][j] is None]
 
-    def record_move(self, player, row, col, step):
+    def record_move(self, player, row, col, start_time):
         # 在每一步完成后记录游戏数据
+        end_time = datetime.now()
+        elapsed_time = (end_time - start_time).total_seconds()  # 游戏用时（秒）
         self.game_log.append({
             'player': player,
             'row': row,
             'col': col,
             'board': [row[:] for row in self.grid],  # 创建一个副本以防止引用问题
             'result': self.get_winner(),
-            'step': step,  # 新增步数信息
+            'elapsed_time': elapsed_time,
+            'step': len(self.game_log),  # 步数即已记录的数据数量
         })
 
 class RandomBot:
