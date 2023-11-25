@@ -1,3 +1,5 @@
+# cli.py
+
 from logic import Board, RandomBot
 
 def print_board(board):
@@ -15,7 +17,7 @@ def choose_player_type():
         else:
             print("Invalid choice. Please enter 1 or 2.")
 
-def main():
+def play_game():
     board = Board()
     player = choose_player_type()
 
@@ -50,6 +52,17 @@ def main():
                 player = board.other_player(player)
         else:
             print("Invalid input! Row and column must be 0, 1, or 2.")
+
+    # 游戏结束后重置游戏板和写入CSV文件
+    board.reset_board()
+    board.write_csv()
+
+def main():
+    while True:
+        play_game()
+        restart = input("Do you want to play again? (yes/no): ")
+        if restart.lower() != 'yes':
+            break
 
 if __name__ == '__main__':
     main()
