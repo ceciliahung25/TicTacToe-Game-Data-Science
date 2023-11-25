@@ -3,6 +3,8 @@
 from logic import Board, RandomBot
 import csv
 import os
+import pandas as pd
+import matplotlib.pyplot as plt
 
 def print_board(board):
     for i, row in enumerate(board.grid):
@@ -21,6 +23,7 @@ def choose_player_type():
 
 def play_game(board):
     player = choose_player_type()
+    step = 0  # 新增步数变量
 
     while True:
         print_board(board)
@@ -39,8 +42,9 @@ def play_game(board):
                 print("That cell is already occupied! Try again.")
                 continue
 
+            step += 1  # 步数加一
             board.grid[row][col] = player
-            board.record_move(player, row, col)  # 记录游戏数据
+            board.record_move(player, row, col, step)  # 记录游戏数据
             winner = board.get_winner()
             if winner:
                 print_board(board)
@@ -60,7 +64,7 @@ def play_game(board):
 
 def write_csv(board):
     file_path = os.path.join('logs', 'game_log.csv')
-    fieldnames = ['player', 'row', 'col', 'board', 'result']
+    fieldnames = ['player', 'row', 'col', 'board', 'result', 'step']
 
     # 检查文件是否存在，如果不存在则写入表头
     if not os.path.exists(file_path):
@@ -77,9 +81,3 @@ def main():
     while True:
         board = Board()
         play_game(board)
-        restart = input("Do you want to play again? (yes/no): ")
-        if restart.lower() != 'yes':
-            break
-
-if __name__ == '__main__':
-    main()
