@@ -9,6 +9,7 @@ class Board:
             [None, None, None],
             [None, None, None],
         ]
+        self.game_log = []  # 新增的属性，用于记录游戏数据
 
     def reset_board(self):
         self.grid = [
@@ -45,6 +46,16 @@ class Board:
     def get_empty_squares(self):
         return [(i, j) for i in range(3) for j in range(3) if self.grid[i][j] is None]
 
+    def record_move(self, player, row, col):
+        # 在每一步完成后记录游戏数据
+        self.game_log.append({
+            'player': player,
+            'row': row,
+            'col': col,
+            'board': [row[:] for row in self.grid],  # 创建一个副本以防止引用问题
+            'result': self.get_winner(),
+        })
+
 class RandomBot:
     def __init__(self, symbol):
         self.symbol = symbol
@@ -52,4 +63,3 @@ class RandomBot:
     def get_move(self, board):
         available_squares = board.get_empty_squares()
         return random.choice(available_squares) if available_squares else None
-
