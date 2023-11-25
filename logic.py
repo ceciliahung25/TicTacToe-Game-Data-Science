@@ -56,10 +56,8 @@ class RandomBot:
     def __init__(self, symbol):
         self.symbol = symbol
 
-    def get_move(self, board, is_human=False):
-        if is_human:
-            # 如果是人类玩家，返回None，让游戏继续等待用户输入
-            return None
-        else:
-            available_squares = [(i, j) for i in range(3) for j in range(3) if board.grid[i][j] is None]
-            return random.choice(available_squares) if available_squares else (0, 0)
+    def get_move(self, board):
+        available_squares = [(i, j) for i in range(3) for j in range(3) if board.grid[i][j] is None]
+
+        # 随机选择一个可用位置
+        return random.choice(available_squares) if available_squares else (0, 0)
