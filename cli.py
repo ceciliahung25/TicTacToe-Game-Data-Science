@@ -90,5 +90,8 @@ def main():
         else:
             print("Invalid input! Row and column must be 0, 1, or 2.")
 
+        # 添加额外的输入，清除输入缓冲
+        input("Press Enter to continue...")
+
 if __name__ == '__main__':
     main()
