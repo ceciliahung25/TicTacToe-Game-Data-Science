@@ -1,6 +1,8 @@
 # cli.py
 
 from logic import Board, RandomBot
+import csv
+import os
 
 def print_board(board):
     for i, row in enumerate(board.grid):
@@ -17,8 +19,7 @@ def choose_player_type():
         else:
             print("Invalid choice. Please enter 1 or 2.")
 
-def play_game():
-    board = Board()
+def play_game(board):
     player = choose_player_type()
 
     while True:
@@ -53,15 +54,28 @@ def play_game():
         else:
             print("Invalid input! Row and column must be 0, 1, or 2.")
 
-        # 游戏结束后重置游戏板
+    # 游戏结束后写入CSV文件
+    write_csv(board.game_log)
 
-    # 游戏结束后重置游戏板和写入CSV文件
-    board.reset_board()
-    board.write_csv()
+def write_csv(game_log):
+    file_path = os.path.join('logs', 'game_log.csv')
+    fieldnames = ['player', 'row', 'col', 'board', 'result']
+
+    # 检查文件是否存在，如果不存在则写入表头
+    if not os.path.exists(file_path):
+        with open(file_path, mode='w', newline='') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+            writer.writeheader()
+
+    # 写入所有游戏日志数据
+    with open(file_path, mode='a', newline='') as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writerows(game_log)
 
 def main():
     while True:
-        play_game()
+        board = Board()
+        play_game(board)
         restart = input("Do you want to play again? (yes/no): ")
         if restart.lower() != 'yes':
             break
