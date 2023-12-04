@@ -5,6 +5,7 @@ import csv
 import os
 from datetime import datetime
 
+# 添加调试输出
 def print_board(board):
     for i, row in enumerate(board.grid):
         print(f"{i} | {' | '.join(cell if cell is not None else ' ' for cell in row)} |")
@@ -20,7 +21,9 @@ def choose_player_type():
         else:
             print("Invalid choice. Please enter 1 or 2.")
 
+# 添加调试输出
 def analyze_game_logs():
+    print("Entering analyze_game_logs()...")  # 调试输出
     df = pd.DataFrame(board.game_log)
     
     # 显示描述性统计信息
@@ -31,7 +34,9 @@ def analyze_game_logs():
     print("\nCount of each result:")
     print(df['result'].value_counts())
 
+# 添加调试输出
 def linear_regression_analysis():
+    print("Entering linear_regression_analysis()...")  # 调试输出
     df = pd.DataFrame(board.game_log)
 
     # 将位置转换为数值（角落: 0, 中间: 1, 边缘: 2）
@@ -50,6 +55,7 @@ def linear_regression_analysis():
     print(f"Coefficient: {model.coef_[0]:.4f}")
     print(f"Intercept: {model.intercept_:.4f}")
 
+# 添加调试输出
 def play_game(board):
     player = choose_player_type()
     start_time = datetime.now()  
@@ -89,30 +95,10 @@ def play_game(board):
             print("Invalid input! Row and column must be 0, 1, or 2.")
 
     write_csv(board)
+    analyze_game_logs()  # 确保在每场游戏结束后提取描述性统计信息
+    linear_regression_analysis()  # 确保在每场游戏结束后构建线性回归模型
 
-def write_csv(board):
-    file_path = os.path.join('logs', 'game_log.csv')
-    fieldnames = ['player', 'row', 'col', 'board', 'result', 'elapsed_time', 'step', 'first_player']
-
-    if not os.path.exists(file_path):
-        with open(file_path, mode='w', newline='') as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-            writer.writeheader()
-
-    with open(file_path, mode='a', newline='') as csv_file:
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-        writer.writerows(board.game_log)
-
-def main():
-    while True:
-        board = Board()
-        play_game(board)
-        restart = input("Do you want to play again? (yes/no): ")
-        if restart.lower() != 'yes':
-            break
-
-        analyze_game_logs()  # 添加这一行，确保在每场游戏结束后提取描述性统计信息
-        linear_regression_analysis()  # 添加这一行，确保在每场游戏结束后构建线性回归模型
+# 其余部分保持不变
 
 if __name__ == '__main__':
     main()
