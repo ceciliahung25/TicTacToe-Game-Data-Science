@@ -79,6 +79,16 @@ class Board:
             'step': len(self.game_log),  
         })
 
+    def convert_position(row, col):
+    # 这是一个示例实现，你可以根据需要进行修改
+    if (row, col) in [(0, 0), (0, 2), (2, 0), (2, 2)]:
+        return 0  # 角落
+    elif (row, col) == (1, 1):
+        return 1  # 中间
+    else:
+        return 2  # 边缘
+
+    
 class RandomBot:
     def __init__(self, symbol):
         self.symbol = symbol
