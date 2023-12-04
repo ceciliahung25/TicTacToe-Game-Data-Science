@@ -23,6 +23,17 @@ def choose_player_type():
         else:
             print("Invalid choice. Please enter 1 or 2.")
 
+def convert_position(row, col):
+    """
+    将位置(row, col)转换为数值表示，角落: 0, 中间: 1, 边缘: 2
+    """
+    if (row, col) in [(0, 0), (0, 2), (2, 0), (2, 2)]:
+        return 0  # 角落
+    elif (row, col) == (1, 1):
+        return 1  # 中间
+    else:
+        return 2  # 边缘
+
 def analyze_game_logs(board):  # 添加 board 参数
     print("Entering analyze_game_logs()...")  # 调试输出
     df = pd.DataFrame(board.game_log)
