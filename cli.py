@@ -51,8 +51,6 @@ def analyze_game_logs(board):  # 添加 board 参数
 
 
 
-
-
 def linear_regression_analysis(board):
     print("Entering linear_regression_analysis()...")  # Debug output
     df = pd.DataFrame(board.game_log)
@@ -80,6 +78,14 @@ def linear_regression_analysis(board):
     # If you want to visualize the tree, you can use plot_tree function from sklearn.tree
     print("Model trained successfully.")
 
+    # Test the model with new data
+    test_data = pd.DataFrame({'position': [0, 1, 2]})
+    predicted_labels = label_encoder.inverse_transform(model.predict(test_data))
+
+    print("\nTest Predictions:")
+    print(test_data)
+    print("Predicted Labels:")
+    print(predicted_labels)
 
 
 def play_game(board):
