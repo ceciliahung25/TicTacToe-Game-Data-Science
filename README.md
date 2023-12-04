@@ -1,4 +1,4 @@
-# TicTacToe-with-Tests
+# TicTacToe-Game-Data
 Starter code for the Tic Tac Toe assignments
 
 ## Introduction
