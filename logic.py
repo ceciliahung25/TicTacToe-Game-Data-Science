@@ -1,5 +1,6 @@
 import random
 from datetime import datetime
+from sklearn.utils.multiclass import type_of_target
 
 class Board:
     def __init__(self):
