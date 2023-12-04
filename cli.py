@@ -59,8 +59,9 @@ def linear_regression_analysis(board):
 
     # Prepare data
     X = df[['position']]  # Use the 'position' column instead of 'result'
-    y = df['result'].apply(lambda result: 1 if result == first_player else 0)
+    y = df['result']  # Keep the 'result' column as it is
     
+        
     # Create a logistic regression model
     model = LogisticRegression()
     model.fit(X, y)
