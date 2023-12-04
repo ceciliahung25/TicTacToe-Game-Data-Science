@@ -1,15 +1,9 @@
-#cli.py
-
-import sys
 import pandas as pd
+from sklearn.linear_model import LinearRegression
 from logic import Board, RandomBot
 import csv
 import os
 from datetime import datetime
-from sklearn.linear_model import LinearRegression
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.preprocessing import LabelEncoder
 
 def print_board(board):
     for i, row in enumerate(board.grid):
@@ -27,32 +21,15 @@ def choose_player_type():
             print("Invalid choice. Please enter 1 or 2.")
 
 def convert_position(row, col):
-    """
-    将位置(row, col)转换为数值表示，角落: 0, 中间: 1, 边缘: 2
-    """
     if (row, col) in [(0, 0), (0, 2), (2, 0), (2, 2)]:
-        return 0  # 角落
+        return 0  # Corner
     elif (row, col) == (1, 1):
-        return 1  # 中间
+        return 1  # Center
     else:
-        return 2  # 边缘
-
-def analyze_game_logs(board):  # 添加 board 参数
-    print("Entering analyze_game_logs()...")  # 调试输出
-    df = pd.DataFrame(board.game_log)
-    
-    # 显示描述性统计信息
-    print("Descriptive Statistics:")
-    print(df.describe())
-
-    # 显示每个结果的数量
-    print("\nCount of each result:")
-    print(df['result'].value_counts())
-
-
+        return 2  # Edge
 
 def linear_regression_analysis(board):
-    print("Entering linear_regression_analysis()...")  # Debug output
+    print("Entering linear_regression_analysis()...")
     df = pd.DataFrame(board.game_log)
 
     # Get the first player
@@ -63,35 +40,30 @@ def linear_regression_analysis(board):
 
     # Prepare data
     X = df[['position']]
-    
-    # Use LabelEncoder to convert string labels to integers
-    label_encoder = LabelEncoder()
-    y = label_encoder.fit_transform(df['result'])
+    y = df['result'].apply(lambda result: 1 if result == first_player else 0)
 
-    # Create a decision tree classifier model
-    model = DecisionTreeClassifier()
+    # Create a linear regression model
+    model = LinearRegression()
     model.fit(X, y)
 
     # Report model fit parameters
-    print("\nDecision Tree Classifier Model Fit Parameters:")
-    # The decision tree classifier does not have coefficients, so we won't print them
-    # If you want to visualize the tree, you can use plot_tree function from sklearn.tree
-    print("Model trained successfully.")
+    print("\nLinear Regression Model Fit Parameters:")
+    print(f"Coefficient: {model.coef_[0]:.4f}")
+    print(f"Intercept: {model.intercept_:.4f}")
 
-    # Test the model with new data
-    test_data = pd.DataFrame({'position': [0, 1, 2]})
-    predicted_labels = label_encoder.inverse_transform(model.predict(test_data))
+    # Predict probabilities for each position
+    positions = [[0], [1], [2]]
+    probabilities = model.predict(positions)
 
-    print("\nTest Predictions:")
-    print(test_data)
-    print("Predicted Labels:")
-    print(predicted_labels)
-
+    # Report predicted probabilities
+    print("\nPredicted Probabilities for Each Position:")
+    for pos, prob in zip(positions, probabilities):
+        print(f"Position {pos[0]}: {prob:.4f}")
 
 def play_game(board):
-    print("Entering play_game()...")  # 调试输出
+    print("Entering play_game()...")
     player = choose_player_type()
-    start_time = datetime.now()  
+    start_time = datetime.now()
 
     while True:
         print_board(board)
@@ -128,7 +100,6 @@ def play_game(board):
             print("Invalid input! Row and column must be 0, 1, or 2.")
 
     write_csv(board)
-    analyze_game_logs(board)  # 传递 board 参数
     linear_regression_analysis(board)
 
 def write_csv(board):
