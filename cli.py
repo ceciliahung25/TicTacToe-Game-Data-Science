@@ -50,6 +50,9 @@ def linear_regression_analysis(board):  # 添加 board 参数
     print("Entering linear_regression_analysis()...")  # 调试输出
     df = pd.DataFrame(board.game_log)
 
+    # 获取第一位玩家
+    first_player = df['player'][0]
+
     # 将位置转换为数值（角落: 0, 中间: 1, 边缘: 2）
     df['position'] = df.apply(lambda row: convert_position(row['row'], row['col']), axis=1)
 
@@ -65,6 +68,7 @@ def linear_regression_analysis(board):  # 添加 board 参数
     print("\nLinear Regression Model Fit Parameters:")
     print(f"Coefficient: {model.coef_[0]:.4f}")
     print(f"Intercept: {model.intercept_:.4f}")
+
 
 def play_game(board):
     print("Entering play_game()...")  # 调试输出
