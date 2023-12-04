@@ -4,6 +4,7 @@ from logic import Board, RandomBot
 import csv
 import os
 from datetime import datetime
+import pandas as pd
 
 # 添加调试输出
 def print_board(board):
