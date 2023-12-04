@@ -9,6 +9,7 @@ from datetime import datetime
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import LabelEncoder
 
 def print_board(board):
     for i, row in enumerate(board.grid):
@@ -50,6 +51,8 @@ def analyze_game_logs(board):  # 添加 board 参数
 
 
 
+
+
 def linear_regression_analysis(board):
     print("Entering linear_regression_analysis()...")  # Debug output
     df = pd.DataFrame(board.game_log)
@@ -62,7 +65,10 @@ def linear_regression_analysis(board):
 
     # Prepare data
     X = df[['position']]
-    y = df['result']  # Keep the 'result' column as it is
+    
+    # Use LabelEncoder to convert string labels to integers
+    label_encoder = LabelEncoder()
+    y = label_encoder.fit_transform(df['result'])
 
     # Create a decision tree classifier model
     model = DecisionTreeClassifier()
@@ -73,6 +79,7 @@ def linear_regression_analysis(board):
     # The decision tree classifier does not have coefficients, so we won't print them
     # If you want to visualize the tree, you can use plot_tree function from sklearn.tree
     print("Model trained successfully.")
+
 
 
 def play_game(board):
