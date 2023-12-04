@@ -24,17 +24,17 @@ class Board:
             return 'X'
 
     def get_winner(self):
-        # Check rows
+        # 检查行
         for row in self.grid:
             if row[0] == row[1] == row[2] and row[0] is not None:
                 return row[0]
 
-        # Check columns
+        # 检查列
         for col in range(3):
             if self.grid[0][col] == self.grid[1][col] == self.grid[2][col] and self.grid[0][col] is not None:
                 return self.grid[0][col]
 
-        # Check diagonals
+        # 检查对角线
         if self.grid[0][0] == self.grid[1][1] == self.grid[2][2] and self.grid[0][0] is not None:
             return self.grid[0][0]
         if self.grid[0][2] == self.grid[1][1] == self.grid[2][0] and self.grid[0][2] is not None:
@@ -46,21 +46,27 @@ class Board:
         return [(i, j) for i in range(3) for j in range(3) if self.grid[i][j] is None]
 
     def record_move(self, player, row, col, start_time):
-        
         end_time = datetime.now()
         elapsed_time = (end_time - start_time).total_seconds()  
+
+        # 检查是否是第一步
+        if len(self.game_log) == 0:
+            first_player = player
+        else:
+            first_player = None
+
         self.game_log.append({
             'player': player,
             'row': row,
             'col': col,
-            'board': [row[:] for row in self.grid],  
+            'board': [row[:] for row in self.grid],
             'result': self.get_winner(),
             'elapsed_time': elapsed_time,
-            'step': len(self.game_log),  
+            'step': len(self.game_log),
+            'first_player': first_player,  # 新增字段，表示第一位玩家的移动
         })
 
     def record_draw(self, start_time):
-        
         end_time = datetime.now()
         elapsed_time = (end_time - start_time).total_seconds()  
         self.game_log.append({
