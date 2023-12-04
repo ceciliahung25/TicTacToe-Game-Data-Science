@@ -7,6 +7,7 @@ import csv
 import os
 from datetime import datetime
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
 
 def print_board(board):
     for i, row in enumerate(board.grid):
@@ -59,10 +60,11 @@ def linear_regression_analysis(board):
     # Prepare data
     X = df[['position']]  # Use the 'position' column instead of 'result'
     y = df['result'].apply(lambda result: 1 if result == first_player else 0)
-
-    # Create a linear regression model
-    model = LinearRegression()
+    
+    # Create a logistic regression model
+    model = LogisticRegression()
     model.fit(X, y)
+
 
     # Report model fit parameters
     print("\nLinear Regression Model Fit Parameters:")
