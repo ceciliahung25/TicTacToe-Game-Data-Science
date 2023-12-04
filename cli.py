@@ -46,25 +46,25 @@ def analyze_game_logs(board):  # 添加 board 参数
     print("\nCount of each result:")
     print(df['result'].value_counts())
 
-def linear_regression_analysis(board):  # 添加 board 参数
-    print("Entering linear_regression_analysis()...")  # 调试输出
+def linear_regression_analysis(board):
+    print("Entering linear_regression_analysis()...")  # Debug output
     df = pd.DataFrame(board.game_log)
 
-    # 获取第一位玩家
+    # Get the first player
     first_player = df['player'].iloc[0]
 
-    # 将位置转换为数值（角落: 0, 中间: 1, 边缘: 2）
+    # Convert position to numerical values (corner: 0, center: 1, edge: 2)
     df['position'] = df.apply(lambda row: convert_position(row['row'], row['col']), axis=1)
 
-    # 准备数据
-    X = df[['position']]
-    y = df['result'].apply(lambda result: 1 if result == first_player else 0)  # 1 表示获胜，0 表示其他
+    # Prepare data
+    X = df[['position']]  # Use the 'position' column instead of 'result'
+    y = df['result'].apply(lambda result: 1 if result == first_player else 0)
 
-    # 创建线性回归模型
+    # Create a linear regression model
     model = LinearRegression()
     model.fit(X, y)
 
-    # 报告模型拟合参数
+    # Report model fit parameters
     print("\nLinear Regression Model Fit Parameters:")
     print(f"Coefficient: {model.coef_[0]:.4f}")
     print(f"Intercept: {model.intercept_:.4f}")
