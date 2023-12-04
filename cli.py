@@ -51,7 +51,7 @@ def linear_regression_analysis(board):  # 添加 board 参数
     df = pd.DataFrame(board.game_log)
 
     # 获取第一位玩家
-    first_player = df['player'][0]
+    first_player = df['player'].iloc[0]
 
     # 将位置转换为数值（角落: 0, 中间: 1, 边缘: 2）
     df['position'] = df.apply(lambda row: convert_position(row['row'], row['col']), axis=1)
