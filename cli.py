@@ -1,6 +1,6 @@
 #cli.py
 
-import sys  # 添加这一行
+import sys
 import pandas as pd
 from logic import Board, RandomBot
 import csv
@@ -8,7 +8,6 @@ import os
 from datetime import datetime
 from sklearn.linear_model import LinearRegression
 
-# 添加调试输出
 def print_board(board):
     for i, row in enumerate(board.grid):
         print(f"{i} | {' | '.join(cell if cell is not None else ' ' for cell in row)} |")
@@ -24,8 +23,7 @@ def choose_player_type():
         else:
             print("Invalid choice. Please enter 1 or 2.")
 
-# 添加调试输出
-def analyze_game_logs():
+def analyze_game_logs(board):  # 添加 board 参数
     print("Entering analyze_game_logs()...")  # 调试输出
     df = pd.DataFrame(board.game_log)
     
@@ -37,8 +35,7 @@ def analyze_game_logs():
     print("\nCount of each result:")
     print(df['result'].value_counts())
 
-# 添加调试输出
-def linear_regression_analysis():
+def linear_regression_analysis(board):  # 添加 board 参数
     print("Entering linear_regression_analysis()...")  # 调试输出
     df = pd.DataFrame(board.game_log)
 
@@ -58,7 +55,6 @@ def linear_regression_analysis():
     print(f"Coefficient: {model.coef_[0]:.4f}")
     print(f"Intercept: {model.intercept_:.4f}")
 
-# 添加调试输出
 def play_game(board):
     print("Entering play_game()...")  # 调试输出
     player = choose_player_type()
@@ -99,8 +95,8 @@ def play_game(board):
             print("Invalid input! Row and column must be 0, 1, or 2.")
 
     write_csv(board)
-    analyze_game_logs()  # 确保在每场游戏结束后提取描述性统计信息
-    linear_regression_analysis()  # 确保在每场游戏结束后构建线性回归模型
+    analyze_game_logs(board)  # 传递 board 参数
+    linear_regression_analysis(board)
 
 def write_csv(board):
     file_path = os.path.join('logs', 'game_log.csv')
