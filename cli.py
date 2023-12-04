@@ -1,10 +1,12 @@
 #cli.py
 
+import sys  # 添加这一行
+import pandas as pd
 from logic import Board, RandomBot
 import csv
 import os
 from datetime import datetime
-import pandas as pd
+from sklearn.linear_model import LinearRegression
 
 # 添加调试输出
 def print_board(board):
@@ -58,6 +60,7 @@ def linear_regression_analysis():
 
 # 添加调试输出
 def play_game(board):
+    print("Entering play_game()...")  # 调试输出
     player = choose_player_type()
     start_time = datetime.now()  
 
@@ -99,7 +102,26 @@ def play_game(board):
     analyze_game_logs()  # 确保在每场游戏结束后提取描述性统计信息
     linear_regression_analysis()  # 确保在每场游戏结束后构建线性回归模型
 
-# 其余部分保持不变
+def write_csv(board):
+    file_path = os.path.join('logs', 'game_log.csv')
+    fieldnames = ['player', 'row', 'col', 'board', 'result', 'elapsed_time', 'step', 'first_player']
+
+    if not os.path.exists(file_path):
+        with open(file_path, mode='w', newline='') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+            writer.writeheader()
+
+    with open(file_path, mode='a', newline='') as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writerows(board.game_log)
+
+def main():
+    while True:
+        board = Board()
+        play_game(board)
+        restart = input("Do you want to play again? (yes/no): ")
+        if restart.lower() != 'yes':
+            break
 
 if __name__ == '__main__':
     main()
