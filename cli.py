@@ -1,3 +1,5 @@
+#cli.py
+
 from logic import Board, RandomBot
 import csv
 import os
@@ -49,30 +51,24 @@ def play_game(board):
             elif all(cell is not None for row in board.grid for cell in row):
                 print_board(board)
                 print("It's a draw!")
-
-                
                 board.record_draw(start_time)
-
                 break
             else:
                 player = board.other_player(player)
         else:
             print("Invalid input! Row and column must be 0, 1, or 2.")
 
-    
     write_csv(board)
 
 def write_csv(board):
     file_path = os.path.join('logs', 'game_log.csv')
-    fieldnames = ['player', 'row', 'col', 'board', 'result', 'elapsed_time', 'step']
+    fieldnames = ['player', 'row', 'col', 'board', 'result', 'elapsed_time', 'step', 'first_player']
 
-    
     if not os.path.exists(file_path):
         with open(file_path, mode='w', newline='') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
             writer.writeheader()
 
-    
     with open(file_path, mode='a', newline='') as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writerows(board.game_log)
