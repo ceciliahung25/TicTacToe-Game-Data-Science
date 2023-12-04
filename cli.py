@@ -8,6 +8,7 @@ import os
 from datetime import datetime
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
 
 def print_board(board):
     for i, row in enumerate(board.grid):
@@ -47,6 +48,8 @@ def analyze_game_logs(board):  # 添加 board 参数
     print("\nCount of each result:")
     print(df['result'].value_counts())
 
+
+
 def linear_regression_analysis(board):
     print("Entering linear_regression_analysis()...")  # Debug output
     df = pd.DataFrame(board.game_log)
@@ -58,19 +61,18 @@ def linear_regression_analysis(board):
     df['position'] = df.apply(lambda row: convert_position(row['row'], row['col']), axis=1)
 
     # Prepare data
-    X = df[['position']]  # Use the 'position' column instead of 'result'
+    X = df[['position']]
     y = df['result']  # Keep the 'result' column as it is
-    
-        
-    # Create a logistic regression model
-    model = LogisticRegression()
+
+    # Create a decision tree classifier model
+    model = DecisionTreeClassifier()
     model.fit(X, y)
 
-
     # Report model fit parameters
-    print("\nLinear Regression Model Fit Parameters:")
-    print(f"Coefficient: {model.coef_[0]:.4f}")
-    print(f"Intercept: {model.intercept_:.4f}")
+    print("\nDecision Tree Classifier Model Fit Parameters:")
+    # The decision tree classifier does not have coefficients, so we won't print them
+    # If you want to visualize the tree, you can use plot_tree function from sklearn.tree
+    print("Model trained successfully.")
 
 
 def play_game(board):
