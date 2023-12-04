@@ -1,5 +1,6 @@
+# cli.py
 import pandas as pd
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
 from logic import Board, RandomBot
 import csv
 import os
@@ -42,18 +43,18 @@ def linear_regression_analysis(board):
     X = df[['position']]
     y = df['result'].apply(lambda result: 1 if result == first_player else 0)
 
-    # Create a linear regression model
-    model = LinearRegression()
+    # Create a logistic regression model
+    model = LogisticRegression()
     model.fit(X, y)
 
     # Report model fit parameters
-    print("\nLinear Regression Model Fit Parameters:")
-    print(f"Coefficient: {model.coef_[0]:.4f}")
-    print(f"Intercept: {model.intercept_:.4f}")
+    print("\nLogistic Regression Model Fit Parameters:")
+    print(f"Coefficient: {model.coef_[0][0]:.4f}")
+    print(f"Intercept: {model.intercept_[0]:.4f}")
 
     # Predict probabilities for each position
     positions = [[0], [1], [2]]
-    probabilities = model.predict(positions)
+    probabilities = model.predict_proba(positions)[:, 1]
 
     # Report predicted probabilities
     print("\nPredicted Probabilities for Each Position:")
@@ -125,3 +126,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
