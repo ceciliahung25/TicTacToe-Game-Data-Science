@@ -20,6 +20,36 @@ def choose_player_type():
         else:
             print("Invalid choice. Please enter 1 or 2.")
 
+def analyze_game_logs():
+    df = pd.DataFrame(board.game_log)
+    
+    # 显示描述性统计信息
+    print("Descriptive Statistics:")
+    print(df.describe())
+
+    # 显示每个结果的数量
+    print("\nCount of each result:")
+    print(df['result'].value_counts())
+
+def linear_regression_analysis():
+    df = pd.DataFrame(board.game_log)
+
+    # 将位置转换为数值（角落: 0, 中间: 1, 边缘: 2）
+    df['position'] = df.apply(lambda row: convert_position(row['row'], row['col']), axis=1)
+
+    # 准备数据
+    X = df[['position']]
+    y = df['result'].apply(lambda result: 1 if result == first_player else 0)  # 1 表示获胜，0 表示其他
+
+    # 创建线性回归模型
+    model = LinearRegression()
+    model.fit(X, y)
+
+    # 报告模型拟合参数
+    print("\nLinear Regression Model Fit Parameters:")
+    print(f"Coefficient: {model.coef_[0]:.4f}")
+    print(f"Intercept: {model.intercept_:.4f}")
+
 def play_game(board):
     player = choose_player_type()
     start_time = datetime.now()  
@@ -80,6 +110,9 @@ def main():
         restart = input("Do you want to play again? (yes/no): ")
         if restart.lower() != 'yes':
             break
+
+        analyze_game_logs()  # 添加这一行，确保在每场游戏结束后提取描述性统计信息
+        linear_regression_analysis()  # 添加这一行，确保在每场游戏结束后构建线性回归模型
 
 if __name__ == '__main__':
     main()
