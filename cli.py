@@ -5,6 +5,7 @@ from logic import Board, RandomBot
 import csv
 import os
 from datetime import datetime
+from sklearn.preprocessing import OneHotEncoder
 
 def print_board(board):
     for i, row in enumerate(board.grid):
@@ -29,6 +30,8 @@ def convert_position(row, col):
     else:
         return 2  # Edge
 
+# 导入独热编码函数
+
 def linear_regression_analysis(board):
     print("Entering linear_regression_analysis()...")
     df = pd.DataFrame(board.game_log)
@@ -39,37 +42,38 @@ def linear_regression_analysis(board):
     # Convert position to numerical values (corner: 0, center: 1, edge: 2)
     df['position'] = df.apply(lambda row: convert_position(row['row'], row['col']), axis=1)
 
+    # 使用独热编码
+    encoder = OneHotEncoder(sparse=False, drop='first')  # drop='first' 用于避免共线性
+    encoded_positions = encoder.fit_transform(df[['position']])
+    encoded_positions_df = pd.DataFrame(encoded_positions, columns=['position_center', 'position_edge'])
+
+    # 合并独热编码后的位置列到原始 DataFrame
+    df = pd.concat([df, encoded_positions_df], axis=1)
+
     # Prepare data
-    X = df[['position']]
+    X = df[['position_center', 'position_edge']]
     y = df['result'].apply(lambda result: 1 if result == first_player else 0)
 
-    # 在这里打印 X
-    print("Input Features (X):")
-    print(X.head())
+    # 创建线性回归模型
+    model = LinearRegression()
 
-    try:
-        # Create a linear regression model
-        model = LinearRegression()
+    # 拟合模型
+    model.fit(X, y)
 
-        # Fit the model
-        model.fit(X, y)
+    # 报告模型拟合参数
+    print("\nLinear Regression Model Fit Parameters:")
+    for feature, coef in zip(X.columns, model.coef_):
+        print(f"{feature}: {coef:.4f}")
+    print(f"Intercept: {model.intercept_:.4f}")
 
-        # Report model fit parameters
-        print("\nLinear Regression Model Fit Parameters:")
-        print(f"Coefficient: {model.coef_[0]:.4f}")
-        print(f"Intercept: {model.intercept_:.4f}")
+    # 预测每个位置的结果
+    positions = [[0, 1], [1, 0], [0, 0]]  # 分别对应 center, edge, corner
+    predictions = model.predict(positions)
 
-        # Predict outcomes for each position
-        positions = [[0], [1], [2]]
-        predictions = model.predict(positions)
-
-        # Report predicted outcomes
-        print("\nPredicted Outcomes for Each Position:")
-        for pos, pred in zip(positions, predictions):
-            print(f"Position {pos[0]}: {pred:.4f}")
-
-    except Exception as e:
-        print(f"An exception occurred: {e}")
+    # 报告预测结果
+    print("\nPredicted Outcomes for Each Position:")
+    for pos, pred in zip(positions, predictions):
+        print(f"Position (Center, Edge, Corner): {pos} - {pred:.4f}")
 
 def play_game(board):
     print("Entering play_game()...")
