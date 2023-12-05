@@ -29,10 +29,12 @@ def convert_position(row, col):
     else:
         return 2  # Edge
 
-
-
 def linear_regression_analysis(board):
     print("Entering linear_regression_analysis()...")
+    print("Input Features (X):")
+    print(X.head())
+    print("\nTarget Variable (y):")
+    print(y.head())
     df = pd.DataFrame(board.game_log)
 
     # Get the first player
@@ -50,6 +52,10 @@ def linear_regression_analysis(board):
 
     # Fit the model
     model.fit(X, y)
+    print("\nModel Coefficients:")
+    print(model.coef_)
+    print("Model Intercept:")
+    print(model.intercept_)
 
     # Report model fit parameters
     print("\nLinear Regression Model Fit Parameters:")
