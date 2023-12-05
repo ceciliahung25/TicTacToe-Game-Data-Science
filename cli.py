@@ -31,6 +31,8 @@ def convert_position(row, col):
         return 2  # Edge
 
 # 导入独热编码函数
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.linear_model import LinearRegression
 
 def linear_regression_analysis(board):
     print("Entering linear_regression_analysis()...")
@@ -43,7 +45,7 @@ def linear_regression_analysis(board):
     df['position'] = df.apply(lambda row: convert_position(row['row'], row['col']), axis=1)
 
     # 使用独热编码
-    encoder = OneHotEncoder(sparse=False, drop='first')  # drop='first' 用于避免共线性
+    encoder = OneHotEncoder(sparse_output=False, drop='first')  # drop='first' 用于避免共线性
     encoded_positions = encoder.fit_transform(df[['position']])
     encoded_positions_df = pd.DataFrame(encoded_positions, columns=['position_center', 'position_edge'])
 
@@ -74,6 +76,7 @@ def linear_regression_analysis(board):
     print("\nPredicted Outcomes for Each Position:")
     for pos, pred in zip(positions, predictions):
         print(f"Position (Center, Edge, Corner): {pos} - {pred:.4f}")
+
 
 def play_game(board):
     print("Entering play_game()...")
