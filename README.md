@@ -1,4 +1,4 @@
-# TicTacToe-Game-Data
+# TicTacToe-Game-Data-Science
 Starter code for the Tic Tac Toe assignments
 
 ## Introduction
@@ -12,9 +12,6 @@ This is a simple Python command-line Tic-Tac-Toe game. It allows two players to 
 3. Navigate to the directory where the game files are located.
 4. Run the game by executing `python cli.py`.
 5. Follow the on-screen instructions to play.
-
-## Report Form
-It contains a report about interesting statistics about the games and players using tables.
 
 ## logs
 Inside are the raw game statistics data.
