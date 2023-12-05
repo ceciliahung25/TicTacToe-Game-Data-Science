@@ -30,10 +30,6 @@ def convert_position(row, col):
     else:
         return 2  # Edge
 
-# 导入独热编码函数
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.linear_model import LinearRegression
-
 def linear_regression_analysis(board):
     print("Entering linear_regression_analysis()...")
     df = pd.DataFrame(board.game_log)
@@ -76,7 +72,6 @@ def linear_regression_analysis(board):
     print("\nPredicted Outcomes for Each Position:")
     for pos, pred in zip(positions, predictions):
         print(f"Position (Center, Edge, Corner): {pos} - {pred:.4f}")
-
 
 def play_game(board):
     print("Entering play_game()...")
