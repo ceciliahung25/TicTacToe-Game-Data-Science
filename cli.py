@@ -31,10 +31,6 @@ def convert_position(row, col):
 
 def linear_regression_analysis(board):
     print("Entering linear_regression_analysis()...")
-    print("Input Features (X):")
-    print(X.head())
-    print("\nTarget Variable (y):")
-    print(y.head())
     df = pd.DataFrame(board.game_log)
 
     # Get the first player
@@ -47,29 +43,33 @@ def linear_regression_analysis(board):
     X = df[['position']]
     y = df['result'].apply(lambda result: 1 if result == first_player else 0)
 
-    # Create a linear regression model
-    model = LinearRegression()
+    # 在这里打印 X
+    print("Input Features (X):")
+    print(X.head())
 
-    # Fit the model
-    model.fit(X, y)
-    print("\nModel Coefficients:")
-    print(model.coef_)
-    print("Model Intercept:")
-    print(model.intercept_)
+    try:
+        # Create a linear regression model
+        model = LinearRegression()
 
-    # Report model fit parameters
-    print("\nLinear Regression Model Fit Parameters:")
-    print(f"Coefficient: {model.coef_[0]:.4f}")
-    print(f"Intercept: {model.intercept_:.4f}")
+        # Fit the model
+        model.fit(X, y)
 
-    # Predict outcomes for each position
-    positions = [[0], [1], [2]]
-    predictions = model.predict(positions)
+        # Report model fit parameters
+        print("\nLinear Regression Model Fit Parameters:")
+        print(f"Coefficient: {model.coef_[0]:.4f}")
+        print(f"Intercept: {model.intercept_:.4f}")
 
-    # Report predicted outcomes
-    print("\nPredicted Outcomes for Each Position:")
-    for pos, pred in zip(positions, predictions):
-        print(f"Position {pos[0]}: {pred:.4f}")
+        # Predict outcomes for each position
+        positions = [[0], [1], [2]]
+        predictions = model.predict(positions)
+
+        # Report predicted outcomes
+        print("\nPredicted Outcomes for Each Position:")
+        for pos, pred in zip(positions, predictions):
+            print(f"Position {pos[0]}: {pred:.4f}")
+
+    except Exception as e:
+        print(f"An exception occurred: {e}")
 
 def play_game(board):
     print("Entering play_game()...")
